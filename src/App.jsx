@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import 'bulma/css/bulma.css';
 import './App.scss';
+import { GoodsList } from './components/GoodsList/GoodsList';
 
 export const goodsFromServer = [
   'Dumplings',
@@ -20,16 +21,28 @@ export const App = () => {
   const [sortType, setSortType] = useState('');
   const [isReversed, setIsReversed] = useState(false);
 
+  function sortByAlphabet(goodsList) {
+    return goodsList.sort((a, b) => a.localeCompare(b));
+  }
+
+  function sortByLength(goodsList) {
+    return goodsList.sort((a, b) => a.length - b.length);
+  }
+
+  function reverseGoods(goodsList) {
+    return goodsList.reverse();
+  }
+
   if (sortType === 'alphabetically') {
-    visibleGoods.sort((a, b) => a.localeCompare(b));
+    sortByAlphabet(visibleGoods);
   }
 
   if (sortType === 'length') {
-    visibleGoods.sort((a, b) => a.length - b.length);
+    sortByLength(visibleGoods);
   }
 
   if (isReversed) {
-    visibleGoods.reverse();
+    reverseGoods(visibleGoods);
   }
 
   return (
@@ -38,7 +51,9 @@ export const App = () => {
         <button
           type="button"
           className={`button is-info ${sortType === 'alphabetically' ? '' : 'is-light'}`}
-          onClick={() => setSortType('alphabetically')}
+          onClick={() => {
+            setSortType('alphabetically');
+          }}
         >
           Sort alphabetically
         </button>
@@ -46,7 +61,9 @@ export const App = () => {
         <button
           type="button"
           className={`button is-success ${sortType === 'length' ? '' : 'is-light'}`}
-          onClick={() => setSortType('length')}
+          onClick={() => {
+            setSortType('length');
+          }}
         >
           Sort by length
         </button>
@@ -75,13 +92,7 @@ export const App = () => {
         )}
       </div>
 
-      <ul>
-        {visibleGoods.map(good => (
-          <li data-cy="Good" key={good}>
-            {good}
-          </li>
-        ))}
-      </ul>
+      <GoodsList goods={visibleGoods} />
     </div>
   );
 };
